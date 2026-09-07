@@ -1,1 +1,124 @@
-index
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EA Almanac — Parent Guide</title>
+<meta name="description" content="A developmental reference for parents. Add your children and generate age-appropriate guidance from the EA Almanac.">
+<style>
+:root{--bg:#f5f1e8;--paper:#fffdf8;--ink:#25241f;--muted:#6e6a60;--line:#d9d2c5;--accent:#5b6b52;--accent-dark:#43523c;--warm:#a36d43;--danger:#8a473d;--shadow:0 16px 50px rgba(55,45,30,.08);--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.hero{padding:28px 4px 30px}.eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--warm)}h1{font-family:Georgia,serif;font-size:clamp(2.5rem,6vw,4.6rem);line-height:1;margin:10px 0 14px;letter-spacing:-.03em}h2{font-family:Georgia,serif;font-size:1.8rem;margin:0 0 8px}h3{font-size:1rem;margin:0 0 6px}p{margin:0;color:var(--muted)}.hero p{max-width:720px;font-size:1.05rem}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:22px}.panel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:16px}.btn{border:0;border-radius:12px;padding:11px 15px;font:inherit;font-weight:800;cursor:pointer;transition:.18s ease}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-dark)}.btn-quiet{background:#eee8dc;color:var(--ink)}.btn-danger{background:#f0dfdb;color:var(--danger)}
+.kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.kid{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fffbf4}.kid-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.kid-name{font-weight:900}.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}input,select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 11px;font:inherit;color:var(--ink)}input:focus,select:focus{outline:3px solid rgba(91,107,82,.16);border-color:var(--accent)}.age-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.hint{font-size:.82rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.status{font-size:.9rem;color:var(--muted)}.status.error{color:var(--danger);font-weight:700}
+.results{display:grid;gap:20px}.result{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}.result-top{padding:20px 22px;background:linear-gradient(135deg,#f1eadf,#fbf7ef);border-bottom:1px solid var(--line)}.result-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{padding:5px 9px;border-radius:999px;background:#ece5da;color:var(--muted);font-size:.78rem;font-weight:800}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line)}.card{background:var(--paper);padding:18px}.card .label{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;color:var(--warm);font-weight:900;margin-bottom:7px}.card .text{font-size:1rem}.card.quote{background:#f8f4ec}.card.quote .text{font-family:Georgia,serif;font-size:1.1rem}.empty{padding:36px;text-align:center;color:var(--muted)}.footer{padding-top:8px;color:var(--muted);font-size:.82rem}.small-link{color:var(--accent-dark);text-decoration:none;font-weight:800}
+@media(max-width:640px){.wrap{padding-left:14px;padding-right:14px}.panel{padding:17px}.panel-head{align-items:flex-start;flex-direction:column}.age-row{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">EA Almanac</div>
+    <h1>A little guidance for the season you’re in.</h1>
+    <p>Add your children once, then generate a small developmental snapshot for everyone at the same time. The Almanac is a reference for the parent—not a tracker, scorecard, or diagnosis.</p>
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Your children</h2><p>Enter a name and either an age or birthday.</p></div>
+      <button class="btn btn-quiet" id="addKid">+ Add child</button>
+    </div>
+    <div class="kids" id="kids"></div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-primary" id="generate">Generate today’s guidance</button>
+      <span class="status" id="status">Ready.</span>
+    </div>
+  </section>
+
+  <section class="panel" id="resultsPanel">
+    <div class="panel-head"><div><h2>Today’s Almanac</h2><p>Each child gets a mix of perspective and something practical to do.</p></div></div>
+    <div class="results" id="results"><div class="empty">Add a child and generate a snapshot.</div></div>
+  </section>
+
+  <div class="footer">Prototype powered by the 1–2 and 2–5 EA Almanac corpora. <a class="small-link" href="https://github.com/brovado/EA-Almanac" target="_blank" rel="noreferrer">View the project</a>.</div>
+</div>
+
+<script>
+const DATA_PATHS={
+  '1-2':'data/EA-Almanac-1-2.json',
+  '2-5':'data/EA-Almanac-2-5.json'
+};
+const CATEGORY_LABELS={
+  experiencing:'Experiencing',needs:'Needs',teach:'Teach',encourage:'Encourage',avoid:'Avoid',healthy_development:'Healthy development',warning_signs:'Watch for',weekly_focus:'Weekly focus',monthly_focus:'Monthly focus',books:'Book',activities:'Activity',conversations:'Conversation',life_skills:'Life skill',opportunities:'Opportunity',parent_reminders:'Parent reminder'
+};
+const PICKS=['experiencing','needs','encourage','avoid','activities','conversations','life_skills','parent_reminders'];
+let kidSeq=0; const dataCache={};
+
+function monthToLabel(totalMonths){const y=Math.floor(totalMonths/12),m=totalMonths%12;return y?`${y}y ${m?m+'m':''}`.trim():`${m}m`}
+function getAgeMonths(kid){
+  if(kid.mode==='dob' && kid.dob){
+    const born=new Date(kid.dob+'T12:00:00'); const now=new Date();
+    let m=(now.getFullYear()-born.getFullYear())*12+(now.getMonth()-born.getMonth());
+    if(now.getDate()<born.getDate())m--; return Math.max(0,m);
+  }
+  const y=Math.max(0,Number(kid.years)||0), m=Math.min(11,Math.max(0,Number(kid.months)||0)); return y*12+m;
+}
+function ageBand(months){if(months>=12&&months<24)return '1-2';if(months>=24&&months<=60)return '2-5';return null}
+function windowFor(band,months){
+  if(band==='1-2') return months<15?'12-15m':months<18?'15-18m':'18-24m';
+  if(band==='2-5') return months<30?'24-30m':months<36?'30-36m':months<48?'36-48m':'48-60m';
+  return null;
+}
+async function loadBand(band){if(dataCache[band])return dataCache[band];const r=await fetch(DATA_PATHS[band]);if(!r.ok)throw new Error(`Could not load the ${band} Almanac data.`);const d=await r.json();dataCache[band]=d;return d}
+function hash(str){let h=2166136261;for(let i=0;i<str.length;i++)h^=str.charCodeAt(i),h=Math.imul(h,16777619);return h>>>0}
+function choose(entries,kidKey,count){
+  const recent=JSON.parse(localStorage.getItem('ea_recent')||'[]');
+  const scored=entries.map(e=>({e,s:hash(kidKey+'|'+e.id)})).sort((a,b)=>a.s-b.s);
+  const fresh=scored.filter(x=>!recent.includes(x.e.id)); const pool=(fresh.length>=count?fresh:scored);
+  const picks=pool.slice(0,count).map(x=>x.e);
+  const next=[...picks.map(x=>x.id),...recent].slice(0,60);localStorage.setItem('ea_recent',JSON.stringify(next));return picks;
+}
+function renderKidForm(k){
+  const el=document.createElement('article');el.className='kid';el.dataset.id=k.id;
+  el.innerHTML=`<div class="kid-head"><div class="kid-name">Child</div><button class="btn btn-danger btn-remove" type="button">Remove</button></div>
+  <div class="field"><label>Name</label><input data-field="name" placeholder="e.g. Emma"></div>
+  <div class="field"><label>Enter age by</label><select data-field="mode"><option value="age">Age</option><option value="dob">Birthday</option></select></div>
+  <div data-mode="age"><div class="age-row"><div class="field"><label>Years</label><input data-field="years" type="number" min="0" max="25" value="2"></div><div class="field"><label>Months</label><input data-field="months" type="number" min="0" max="11" value="0"></div></div></div>
+  <div class="field" data-mode="dob" hidden><label>Birthday</label><input data-field="dob" type="date"></div>
+  <div class="hint">Prototype coverage: 12 months through 5 years.</div>`;
+  el.querySelector('.btn-remove').onclick=()=>{el.remove();syncStatus('Child removed.');};
+  const mode=el.querySelector('[data-field="mode"]');mode.onchange=()=>{el.querySelectorAll('[data-mode]').forEach(x=>x.hidden=x.dataset.mode!==mode.value)};
+  document.getElementById('kids').appendChild(el);return el;
+}
+function readKids(){return [...document.querySelectorAll('.kid')].map(el=>{const get=f=>el.querySelector(`[data-field="${f}"]`)?.value||'';return{id:el.dataset.id,name:get('name')||'Your child',mode:get('mode'),years:get('years'),months:get('months'),dob:get('dob')}})}
+function syncStatus(t,error=false){const s=document.getElementById('status');s.textContent=t;s.className='status'+(error?' error':'')}
+function makeResult(kid,data){
+  const months=getAgeMonths(kid), win=windowFor(kid._band,months);const title=kid.name;const all=data.entries.filter(e=>e.age_band===kid._band && (!e.age_windows||e.age_windows.includes(win)));
+  const by={};all.forEach(e=>(by[e.category]??=[]).push(e));
+  const picked={};PICKS.forEach(cat=>{if(by[cat]?.length)picked[cat]=choose(by[cat],kid.id+'|'+win+'|'+cat,1)[0]});
+  const note=choose((by.parent_reminders||[]),kid.id+'|reminder',1)[0]; if(note)picked.parent_reminders=note;
+  const wrap=document.createElement('article');wrap.className='result';
+  wrap.innerHTML=`<div class="result-top"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(monthToLabel(months))} · ${escapeHtml(kid._band==='1-2'?'Emerging Independence':'Exploration & Agency')}</p><div class="result-meta"><span class="pill">${escapeHtml(win)}</span><span class="pill">${all.length} relevant entries</span></div></div><div class="cards"></div>`;
+  const cards=wrap.querySelector('.cards');
+  const order=['experiencing','needs','encourage','avoid','activities','conversations','life_skills','parent_reminders'];
+  order.forEach(cat=>{const e=picked[cat];if(!e)return;const c=document.createElement('div');c.className='card'+(cat==='parent_reminders'?' quote':'');c.innerHTML=`<div class="label">${escapeHtml(CATEGORY_LABELS[cat]||cat)}</div><div class="text">${escapeHtml(e.text)}</div>`;cards.appendChild(c)});
+  return wrap;
+}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+async function generate(){
+  const kids=readKids();if(!kids.length){syncStatus('Add at least one child.',true);return}
+  const results=document.getElementById('results');results.innerHTML='';syncStatus('Generating…');
+  try{
+    for(const kid of kids){const months=getAgeMonths(kid);const band=ageBand(months);if(!band){const d=document.createElement('div');d.className='empty';d.textContent=`${kid.name}: the prototype currently covers ages 1–5.`;results.appendChild(d);continue;}kid._band=band;const data=await loadBand(band);results.appendChild(makeResult(kid,data));}
+    document.getElementById('resultsPanel').scrollIntoView({behavior:'smooth',block:'start'});syncStatus(`${kids.length} snapshot${kids.length===1?'':'s'} generated.`);
+  }catch(e){console.error(e);syncStatus(e.message||'Something went wrong.',true)}
+}
+
+document.getElementById('addKid').onclick=()=>{const id='kid-'+(++kidSeq);renderKidForm({id});syncStatus('Child added.')};
+document.getElementById('generate').onclick=generate;
+renderKidForm({id:'kid-'+(++kidSeq)});
+</script>
+</body>
+</html>
